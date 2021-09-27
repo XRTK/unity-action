@@ -1,0 +1,90 @@
+name: 'Unity Action'
+description: 'Runs Unity with the provided options'
+inputs:
+  editor-path:
+    description: 'Path to the Unity Editor'
+    required: true
+  project-path:
+    description: 'Path to the Unity project'
+    required: true
+  build-target:
+    description: 'Platform build target'
+    required: true
+  args:
+    description: 'Unity cli arguments'
+    required: false
+    default: ''
+  log-path:
+    description: 'Path to log'
+    required: false
+    default: ''
+  name:
+    description: 'Name of the Unity Action'
+    required: false
+    default: 'Unity'
+runs:
+  using: "composite"
+  steps:
+    - name: ${{ inputs.name }}
+      run: |
+        $logPath = "${{ inputs.log-path }}"
+
+        if ( [string]::IsNullOrEmpty($logPath) ) {
+          $date = Get-Date -Format "yyyyMMddTHHmmss"
+          $logName = "${{ RUNNER_TEMP }}\Logs\${{ inputs.build-target }}-${{ inputs.name }}-$date"
+          $logPath = "$logName.log"
+        }
+
+        $editorPath = ${{ inputs.editor-path }}
+        $projectPath = ${{ inputs.project-path }}
+        $additionalArgs = ${{ inputs.args }}
+        $args = "-projectPath `"$projectPath`" -buildTarget ${{ inputs.build-target }} -logfile `"$logPath`" $additionalArgs"
+        Write-Host "$editorPath $args"
+
+        $process = Start-Process -FilePath "$editorPath" -ArgumentList "$args" -PassThru
+
+        $ljob = Start-Job -ScriptBlock {
+          param($log)
+
+          while ( -not (Test-Path $log -Type Leaf) ) {
+              Start-Sleep -Seconds 1
+          }
+
+          Get-Content "$log" -Wait
+        } -ArgumentList $logPath
+
+        while ( -not $process.HasExited )
+        {
+          # While waiting, Get-Content checks the file once each second
+          Start-Sleep -Seconds 1
+          Receive-Job $ljob
+        }
+
+        # Wait for the last of the log information to be written
+        $fileLocked = $true
+
+        while ( $fileLocked )
+        {
+          try
+          {
+            $file = Convert-Path $logPath
+            $fileStream = [System.IO.File]::Open($file,'Open','Write')
+            $fileStream.Close()
+            $fileStream.Dispose()
+            $fileLocked = $false
+          }
+          catch
+          {
+            $fileLocked = $true
+            Start-Sleep -Seconds 1
+            Receive-Job $ljob
+          }
+        }
+
+        # Clean up job
+        Receive-Job $ljob
+        Stop-Job $ljob
+        Remove-Job $ljob
+
+        exit $process.ExitCode
+      shell: powershell
