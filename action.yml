@@ -17,7 +17,7 @@ inputs:
   log-directory:
     description: 'Directory to logs'
     required: false
-    default: '${{ runner.temp }}\Logs\'
+    default: 'Logs\'
   name:
     description: 'Name of the Unity Action'
     required: false
