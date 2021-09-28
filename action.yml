@@ -34,14 +34,13 @@ runs:
           $buildTargetArgs = "-buildTarget `"$bulidTarget`" "
         }
 
-        $logDirectory = "$projectPath\Builds"
+        $logDirectory = "$projectPath\Builds\Logs\"
 
-        if (Test-Path -Path $logDirectory) {
-          Remove-Item $logDirectory -Force -Recurse
+        Write-Host "Log Directory: $logDirectory"
+
+        if ( -not (Test-Path -Path $logDirectory)) {
+          New-Item -ItemType Directory -Force -Path $logDirectory
         }
-
-        $logDirectory += "\Logs"
-        New-Item -ItemType Directory -Force -Path $logDirectory
 
         $date = Get-Date -Format "yyyyMMddTHHmmss"
         $logName = "$logDirectory$name-$date"
