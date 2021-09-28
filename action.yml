@@ -36,7 +36,7 @@ runs:
         $buildTargetArgs = ""
 
         if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
-          $buildTargetArgs = "-buildTarget `"$buildTarget`" "
+          $buildTargetArgs = "-buildTarget `"$bulidTarget`" "
         }
 
         $date = Get-Date -Format "yyyyMMddTHHmmss"
@@ -49,7 +49,7 @@ runs:
         }
 
         $args = "$buildTargetArgs-projectPath `"$projectPath`" -logfile `"$logPath`" $additionalArgs"
-        Write-Host "$editorPath $args"
+        Write-Host "::group::$editorPath $args"
 
         $process = Start-Process -FilePath "$editorPath" -ArgumentList "$args" -PassThru
 
@@ -95,6 +95,8 @@ runs:
         Receive-Job $ljob
         Stop-Job $ljob
         Remove-Job $ljob
+
+        Write-Host "::endgroup::"
 
         exit $process.ExitCode
       shell: powershell
