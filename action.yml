@@ -25,17 +25,18 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: ${{ inputs.name }}
+    - name: '${{ inputs.name }}'
       run: |
         $editorPath = "${{ inputs.editor-path }}"
         $projectPath = "${{ inputs.project-path }}"
         $logDirectory = "${{ inputs.log-directory }}"
         $bulidTarget = "${{ inputs.build-target }}"
         $additionalArgs = "${{ inputs.args }}"
+        $name = "${{ inputs.name }}"
         $buildTargetArgs = ""
 
         if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
-          $buildTargetArgs = "-buildTarget $buildTarget"
+          $buildTargetArgs = "-buildTarget $buildTarget "
         }
 
         if ( [string]::IsNullOrEmpty($logDirectory) ) {
@@ -43,7 +44,7 @@ runs:
         }
 
         $date = Get-Date -Format "yyyyMMddTHHmmss"
-        $logName = "$logDirectory${{ inputs.name }}-$date"
+        $logName = "$logDirectory$name-$date"
         $logPath = "$logName.log"
 
         if( $additionalArgs -like 'runEditorTests' ) {
@@ -51,7 +52,7 @@ runs:
           $additionalArgs += "-editorTestsResultFile `"$testPath`""
         }
 
-        $args = "-projectPath `"$projectPath`" $buildTargetArgs -logfile `"$logPath`" $additionalArgs"
+        $args = "$buildTargetArgs-projectPath `"$projectPath`" -logfile `"$logPath`" $additionalArgs"
         Write-Host "$editorPath $args"
 
         $process = Start-Process -FilePath "$editorPath" -ArgumentList "$args" -PassThru
