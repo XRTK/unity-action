@@ -57,7 +57,7 @@ runs:
           param($log)
 
           while ( -not (Test-Path $log -Type Leaf) ) {
-              Start-Sleep -Seconds 1
+              Start-Sleep -Milliseconds 1
           }
 
           Get-Content "$log" -Wait
@@ -66,7 +66,7 @@ runs:
         while ( -not $process.HasExited )
         {
           # While waiting, Get-Content checks the file once each second
-          Start-Sleep -Seconds 1
+          Start-Sleep -Milliseconds 1
           Receive-Job $ljob
         }
 
@@ -86,7 +86,7 @@ runs:
           catch
           {
             $fileLocked = $true
-            Start-Sleep -Seconds 1
+            Start-Sleep -Milliseconds 1
             Receive-Job $ljob
           }
         }
