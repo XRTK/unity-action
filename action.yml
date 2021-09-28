@@ -48,7 +48,7 @@ runs:
 
         if( $additionalArgs -like "*runEditorTests" ) {
           $testPath = "$logName.xml"
-          $additionalArgs += "-editorTestsResultFile `"$testPath`""
+          $additionalArgs += " -editorTestsResultFile `"$testPath`""
         }
 
         $args = "$buildTargetArgs-projectPath `"$projectPath`" -logfile `"$logPath`" $additionalArgs"
