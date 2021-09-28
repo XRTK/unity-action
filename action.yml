@@ -34,7 +34,7 @@ runs:
           $buildTargetArgs = "-buildTarget `"$bulidTarget`" "
         }
 
-        $logDirectory = "$projectPath\Builds\Logs\"
+        $logDirectory = "$projectPath/Builds/Logs"
 
         Write-Host "Log Directory: $logDirectory"
 
@@ -43,7 +43,7 @@ runs:
         }
 
         $date = Get-Date -Format "yyyyMMddTHHmmss"
-        $logName = "$logDirectory$name-$date"
+        $logName = "$logDirectory/$name-$date"
         $logPath = "$logName.log"
 
         if( $additionalArgs -like "*runEditorTests" ) {
