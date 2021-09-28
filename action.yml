@@ -14,10 +14,6 @@ inputs:
     description: 'Unity cli arguments'
     required: false
     default: '-quit -batchmode'
-  log-directory:
-    description: 'Directory to logs'
-    required: false
-    default: '${{ runner.temp }}\Logs\'
   name:
     description: 'Name of the Unity Action'
     required: false
@@ -29,7 +25,6 @@ runs:
       run: |
         $editorPath = "${{ inputs.editor-path }}"
         $projectPath = "${{ inputs.project-path }}"
-        $logDirectory = "${{ inputs.log-directory }}"
         $bulidTarget = "${{ inputs.build-target }}"
         $additionalArgs = "${{ inputs.args }}"
         $name = "${{ inputs.name }}"
@@ -39,11 +34,20 @@ runs:
           $buildTargetArgs = "-buildTarget `"$bulidTarget`" "
         }
 
+        $logDirectory = "$projectPath\Builds"
+
+        if (Test-Path -Path $logDirectory) {
+          Remove-Item $logDirectory -Force -Recurse
+        }
+
+        $logDirectory += "\Logs"
+        New-Item -ItemType Directory -Force -Path $logDirectory
+
         $date = Get-Date -Format "yyyyMMddTHHmmss"
         $logName = "$logDirectory$name-$date"
         $logPath = "$logName.log"
 
-        if( $additionalArgs -like 'runEditorTests' ) {
+        if( $additionalArgs -like "*runEditorTests" ) {
           $testPath = "$logName.xml"
           $additionalArgs += "-editorTestsResultFile `"$testPath`""
         }
