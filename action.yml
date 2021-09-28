@@ -14,8 +14,8 @@ inputs:
     description: 'Unity cli arguments'
     required: false
     default: ''
-  log-path:
-    description: 'Path to log'
+  log-directory:
+    description: 'Directory to logs'
     required: false
     default: ''
   name:
@@ -27,25 +27,31 @@ runs:
   steps:
     - name: ${{ inputs.name }}
       run: |
-        $logPath = "${{ inputs.log-path }}"
-        $bulidTarget = "${{ inputs.build-target }}"
-        $buildArgs = ""
-
-        if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
-          $buildArgs = "-buildTarget $buildTarget"
-          $buildTarget = "$buildTarget-"
-        }
-
-        if ( [string]::IsNullOrEmpty($logPath) ) {
-          $date = Get-Date -Format "yyyyMMddTHHmmss"
-          $logName = "${{ runner.temp }}\Logs\$buildTarget${{ inputs.name }}-$date"
-          $logPath = "$logName.log"
-        }
-
         $editorPath = "${{ inputs.editor-path }}"
         $projectPath = "${{ inputs.project-path }}"
+        $logDirectory = "${{ inputs.log-directory }}"
+        $bulidTarget = "${{ inputs.build-target }}"
         $additionalArgs = "${{ inputs.args }}"
-        $args = "-projectPath `"$projectPath`" $buildArgs -logfile `"$logPath`" $additionalArgs"
+        $buildTargetArgs = ""
+
+        if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
+          $buildTargetArgs = "-buildTarget $buildTarget"
+        }
+
+        if ( [string]::IsNullOrEmpty($logDirectory) ) {
+          $logDirectory = "${{ runner.temp }}\Logs\"
+        }
+
+        $date = Get-Date -Format "yyyyMMddTHHmmss"
+        $logName = "$logDirectory${{ inputs.name }}-$date"
+        $logPath = "$logName.log"
+
+        if( $additionalArgs -like 'runEditorTests' ) {
+          $testPath = "$logName.xml"
+          $additionalArgs += "-editorTestsResultFile `"$testPath`""
+        }
+
+        $args = "-projectPath `"$projectPath`" $buildTargetArgs -logfile `"$logPath`" $additionalArgs"
         Write-Host "$editorPath $args"
 
         $process = Start-Process -FilePath "$editorPath" -ArgumentList "$args" -PassThru
