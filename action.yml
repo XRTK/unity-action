@@ -13,11 +13,11 @@ inputs:
   args:
     description: 'Unity cli arguments'
     required: false
-    default: ''
+    default: '-quit -batchmode'
   log-directory:
     description: 'Directory to logs'
     required: false
-    default: ''
+    default: '${{ runner.temp }}\Logs\'
   name:
     description: 'Name of the Unity Action'
     required: false
@@ -36,11 +36,7 @@ runs:
         $buildTargetArgs = ""
 
         if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
-          $buildTargetArgs = "-buildTarget $buildTarget "
-        }
-
-        if ( [string]::IsNullOrEmpty($logDirectory) ) {
-          $logDirectory = "${{ runner.temp }}\Logs\"
+          $buildTargetArgs = "-buildTarget `"$buildTarget`" "
         }
 
         $date = Get-Date -Format "yyyyMMddTHHmmss"
