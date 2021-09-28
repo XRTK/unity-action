@@ -32,7 +32,6 @@ runs:
         $buildArgs = ""
 
         if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
-        {
           $buildArgs = "-buildTarget $buildTarget"
           $buildTarget = "$buildTarget-"
         }
