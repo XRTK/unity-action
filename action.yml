@@ -28,17 +28,25 @@ runs:
     - name: ${{ inputs.name }}
       run: |
         $logPath = "${{ inputs.log-path }}"
+        $bulidTarget = "${{ inputs.build-target }}"
+        $buildArgs = ""
+
+        if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
+        {
+          $buildArgs = "-buildTarget $buildTarget"
+          $buildTarget = "$buildTarget-"
+        }
 
         if ( [string]::IsNullOrEmpty($logPath) ) {
           $date = Get-Date -Format "yyyyMMddTHHmmss"
-          $logName = "${{ runner.temp }}\Logs\${{ inputs.build-target }}-${{ inputs.name }}-$date"
+          $logName = "${{ runner.temp }}\Logs\$buildTarget${{ inputs.name }}-$date"
           $logPath = "$logName.log"
         }
 
-        $editorPath = ${{ inputs.editor-path }}
-        $projectPath = ${{ inputs.project-path }}
-        $additionalArgs = ${{ inputs.args }}
-        $args = "-projectPath `"$projectPath`" -buildTarget ${{ inputs.build-target }} -logfile `"$logPath`" $additionalArgs"
+        $editorPath = "${{ inputs.editor-path }}"
+        $projectPath = "${{ inputs.project-path }}"
+        $additionalArgs = "${{ inputs.args }}"
+        $args = "-projectPath `"$projectPath`" $buildArgs -logfile `"$logPath`" $additionalArgs"
         Write-Host "$editorPath $args"
 
         $process = Start-Process -FilePath "$editorPath" -ArgumentList "$args" -PassThru
