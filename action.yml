@@ -31,7 +31,7 @@ runs:
 
         if ( [string]::IsNullOrEmpty($logPath) ) {
           $date = Get-Date -Format "yyyyMMddTHHmmss"
-          $logName = "${{ RUNNER_TEMP }}\Logs\${{ inputs.build-target }}-${{ inputs.name }}-$date"
+          $logName = "${{ runner.temp }}\Logs\${{ inputs.build-target }}-${{ inputs.name }}-$date"
           $logPath = "$logName.log"
         }
 
