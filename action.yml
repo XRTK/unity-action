@@ -1,4 +1,4 @@
-name: 'Unity Action'
+name: 'Unity Action (XRTK)'
 description: 'Runs Unity with the provided options'
 inputs:
   editor-path:
