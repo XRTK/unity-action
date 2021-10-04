@@ -4,7 +4,7 @@ An atomic GitHub Action that runs the Unity engine via cli with the provided par
 
 Part of the [Mixed Reality Toolkit (XRTK)](https://github.com/XRTK) open source project.
 
-> This action does not have any dependency on the use of XRTK in your Unity project.
+> This action does not have any dependency on the use of XRTK in your Unity project, unless you'd like to use the command line build `-executeMethod` arg
 
 ## How to use
 
@@ -18,8 +18,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        build-target: [StandaloneWindows64, WSAPlayer, Android, Lumin]
-      max-parallel: 1 #optional
+        build-target: [ StandaloneWindows64, WSAPlayer, Android, Lumin ]
+      max-parallel: 1
 
     steps:
       - uses: xrtk/unity-action@main
