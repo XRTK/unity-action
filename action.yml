@@ -102,4 +102,4 @@ runs:
         Write-Host "::endgroup::"
 
         exit $process.ExitCode
-      shell: powershell
+      shell: pwsh
