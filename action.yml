@@ -51,10 +51,10 @@ runs:
           $additionalArgs += " -editorTestsResultFile `"$testPath`""
         }
 
-        $args = "$buildTargetArgs-projectPath `"$projectPath`" -logfile `"$logPath`" $additionalArgs"
-        Write-Host "::group::$editorPath $args"
+        $buildArgs = "$buildTargetArgs-projectPath `"$projectPath`" -logfile `"$logPath`" $additionalArgs"
+        Write-Host "::group::$editorPath $buildArgs"
 
-        $process = Start-Process -FilePath "$editorPath" -ArgumentList "$args" -PassThru
+        $process = Start-Process -FilePath "$editorPath" -ArgumentList "$buildArgs" -PassThru
 
         $ljob = Start-Job -ScriptBlock {
           param($log)
