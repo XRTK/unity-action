@@ -1,0 +1,108 @@
+name: 'Unity Action (XRTK)'
+description: 'Runs Unity with the provided options'
+branding:
+  icon: 'at-sign'
+  color: 'blue'
+inputs:
+  editor-path:
+    description: 'Path to the Unity Editor'
+    required: true
+  project-path:
+    description: 'Path to the Unity project'
+    required: true
+  build-target:
+    description: 'Platform build target'
+    required: true
+  args:
+    description: 'Unity cli arguments'
+    required: false
+    default: '-quit -batchmode'
+  name:
+    description: 'Name of the Unity Action'
+    required: false
+    default: 'Unity'
+runs:
+  using: "composite"
+  steps:
+    - name: '${{ inputs.name }}'
+      run: |
+        $editorPath = "${{ inputs.editor-path }}"
+        $projectPath = "${{ inputs.project-path }}"
+        $bulidTarget = "${{ inputs.build-target }}"
+        $additionalArgs = "${{ inputs.args }}"
+        $name = "${{ inputs.name }}"
+        $buildTargetArgs = ""
+
+        if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
+          $buildTargetArgs = "-buildTarget `"$bulidTarget`" "
+        }
+
+        $logDirectory = "$projectPath/Builds/Logs"
+
+        if ( -not (Test-Path -Path $logDirectory)) {
+          $logDirectory = New-Item -ItemType Directory -Force -Path $logDirectory | Select-Object
+        }
+
+        Write-Host "Log Directory: $logDirectory"
+
+        $date = Get-Date -Format "yyyyMMddTHHmmss"
+        $logName = "$logDirectory/$name-$date"
+        $logPath = "$logName.log"
+
+        if( $additionalArgs -like "*runEditorTests" ) {
+          $testPath = "$logName.xml"
+          $additionalArgs += " -editorTestsResultFile `"$testPath`""
+        }
+
+        $buildArgs = "$buildTargetArgs-projectPath `"$projectPath`" -logfile `"$logPath`" $additionalArgs"
+        Write-Host "::group::$editorPath $buildArgs"
+
+        $process = Start-Process -FilePath "$editorPath" -ArgumentList "$buildArgs" -PassThru
+
+        $ljob = Start-Job -ScriptBlock {
+          param($log)
+
+          while ( -not (Test-Path $log -Type Leaf) ) {
+              Start-Sleep -Milliseconds 1
+          }
+
+          Get-Content "$log" -Wait
+        } -ArgumentList $logPath
+
+        while ( -not $process.HasExited )
+        {
+          # While waiting, Get-Content checks the file once each second
+          Start-Sleep -Milliseconds 1
+          Receive-Job $ljob
+        }
+
+        # Wait for the last of the log information to be written
+        $fileLocked = $true
+
+        while ( $fileLocked )
+        {
+          try
+          {
+            $file = Convert-Path $logPath
+            $fileStream = [System.IO.File]::Open($file,'Open','Write')
+            $fileStream.Close()
+            $fileStream.Dispose()
+            $fileLocked = $false
+          }
+          catch
+          {
+            $fileLocked = $true
+            Start-Sleep -Milliseconds 1
+            Receive-Job $ljob
+          }
+        }
+
+        # Clean up job
+        Receive-Job $ljob
+        Stop-Job $ljob
+        Remove-Job $ljob
+
+        Write-Host "::endgroup::"
+
+        exit $process.ExitCode
+      shell: pwsh
