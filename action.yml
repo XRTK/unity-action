@@ -1,7 +1,7 @@
 name: 'Unity Action (XRTK)'
 description: 'Runs Unity with the provided options'
 label: 'at-sign'
-color: ''
+color: 'blue'
 inputs:
   editor-path:
     description: 'Path to the Unity Editor'
