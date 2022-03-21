@@ -29,7 +29,7 @@ runs:
         $editorPath = "${{ inputs.editor-path }}"
         $projectPath = "${{ inputs.project-path }}"
         $bulidTarget = "${{ inputs.build-target }}"
-        $additionalArgs = "${{ inputs.args }}"
+        $additionalArgs = "${{ inputs.args }}".Trim()
         $name = "${{ inputs.name }}"
         $buildTargetArgs = ""
 
