@@ -16,7 +16,7 @@ inputs:
   args:
     description: 'Unity cli arguments'
     required: false
-    default: [ '-quit', '-batchmode' ]
+    default: '-quit -batchmode'
   name:
     description: 'Name of the Unity Action'
     required: false
@@ -29,7 +29,7 @@ runs:
         $editorPath = "${{ inputs.editor-path }}"
         $projectPath = "${{ inputs.project-path }}"
         $bulidTarget = "${{ inputs.build-target }}"
-        $additionalArgs = "${{ join(inputs.args, ' ') }}"
+        $additionalArgs = "${{ inputs.args }}"
         $name = "${{ inputs.name }}"
         $buildTargetArgs = ""
 
