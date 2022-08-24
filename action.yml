@@ -69,11 +69,19 @@ runs:
           Get-Content "$log" -Wait
         } -ArgumentList $logPath
 
+        $processId = $process.Id
+
         while ( -not $process.HasExited )
         {
           # While waiting, Get-Content checks the file once each second
           Start-Sleep -Milliseconds 1
           Receive-Job $ljob
+
+          if ( (Get-Process -Id $processId -ErrorAction SilentlyContinue) -eq $null )
+          {
+            Write-Host "Unity process has ended unexpectedly..."
+            break
+          }
         }
 
         Write-Host "Unity Process Complete!"
