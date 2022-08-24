@@ -76,6 +76,8 @@ runs:
           Receive-Job $ljob
         }
 
+        Write-Host "Unity Process Complete!"
+
         # Wait for the last of the log information to be written
         $fileLocked = $true
 
@@ -96,6 +98,8 @@ runs:
             Receive-Job $ljob
           }
         }
+
+        Write-Host "End of Log stream"
 
         # Clean up job
         Receive-Job $ljob
