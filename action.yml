@@ -84,7 +84,7 @@ runs:
           }
         }
 
-        Write-Host "Unity Process Complete!"
+        Write-Host "Unity Process $processId Complete!"
 
         # Wait for the last of the log information to be written
         $fileLocked = $true
