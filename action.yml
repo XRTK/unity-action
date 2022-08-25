@@ -91,6 +91,13 @@ runs:
         $timeout = New-TimeSpan -Seconds 5
         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
+        function Kill-Tree {
+          Param([int]$ppid)
+          Write-Host "Attempting to kill $ppid"
+          Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $ppid } | ForEach-Object { Kill-Tree $_.ProcessId }
+          Stop-Process -Id $ppid -ErrorAction SilentlyContinue
+        }
+
         do {
           try
           {
@@ -110,8 +117,7 @@ runs:
             if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
               Write-Host "End of log stream, attempting to cleanup child processes..."
               Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object {
-                Write-Host "Attempting to kill $_.ProcessId"
-                Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue
+                Kill-Tree $_.ProcessId
               }
             } else {
               Write-Host "End of log stream"
