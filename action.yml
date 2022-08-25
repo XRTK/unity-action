@@ -112,7 +112,7 @@ runs:
         
         if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
           Write-Host "End of log stream, attempting to cleanup child processes"
-          Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object { Kill-Tree $_.ProcessId }
+          Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object {Stop-Process -Id $_.ProcessId }
         } else {
           Write-Host "End of log stream"
         }
