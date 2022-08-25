@@ -89,8 +89,7 @@ runs:
         # Wait for the last of the log information to be written
         $fileLocked = $true
 
-        while ( $fileLocked )
-        {
+        do {
           try
           {
             $file = Convert-Path $logPath
@@ -105,9 +104,14 @@ runs:
             Start-Sleep -Milliseconds 1
             Receive-Job $ljob
           }
-        }
+          if ( -not $fileLocked )
+          {
+            break
+          }
+        } while ( $stopwatch.elapsed -lt $timeout )
 
-        Write-Host "End of Log stream"
+        Write-Host "End of Log stream, attempting to cleanup child processes"
+        Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object { Kill-Tree $_.ProcessId }
 
         # Clean up job
         Receive-Job $ljob
