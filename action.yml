@@ -101,19 +101,23 @@ runs:
           catch
           {
             $fileLocked = $true
-            Start-Sleep -Milliseconds 1
-            Receive-Job $ljob
           }
 
           if ( $stopwatch.elapsed -lt $timeout )
           {
             if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
               Write-Host "End of log stream, attempting to cleanup child processes..."
-              Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object { Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue }
+              Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object {
+                Write-Host "Attempting to kill $_.ProcessId"
+                Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue
+              }
             } else {
               Write-Host "End of log stream"
             }
           }
+
+          Start-Sleep -Milliseconds 1
+          Receive-Job $ljob
         } while ( $fileLocked )
 
         Write-Host "Cleaning up jobs..."
