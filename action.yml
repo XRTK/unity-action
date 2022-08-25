@@ -104,18 +104,19 @@ runs:
             Start-Sleep -Milliseconds 1
             Receive-Job $ljob
           }
-          if ( -not $fileLocked )
+
+          if ( $stopwatch.elapsed -lt $timeout )
           {
-            break
+            if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
+              Write-Host "End of log stream, attempting to cleanup child processes..."
+              Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object { Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue }
+            } else {
+              Write-Host "End of log stream"
+            }
           }
-        } while ( $stopwatch.elapsed -lt $timeout )
-        
-        if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
-          Write-Host "End of log stream, attempting to cleanup child processes"
-          Get-CimInstance Win32_Process | Where-Object { $_.ParentProcessId -eq $processId } | ForEach-Object { Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue }
-        } else {
-          Write-Host "End of log stream"
-        }
+        } while ( $fileLocked )
+
+        Write-Host "Cleaning up jobs..."
 
         # Clean up job
         Receive-Job $ljob
