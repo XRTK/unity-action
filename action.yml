@@ -109,7 +109,7 @@ runs:
           {
             if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
               Write-Host "End of log stream, attempting to cleanup orphaned processes..."
-              $procsWithParent = Get-WmiObject -ClassName "win32_process" | Select-Object ProcessId,ParentProcessId
+              $procsWithParent = Get-CimInstance -ClassName "win32_process" | Select-Object ProcessId,ParentProcessId
               $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
               Get-Process | Where-Object -Property Id -In $orphaned.ProcessId | ForEach-Object { Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue }
             } else {
