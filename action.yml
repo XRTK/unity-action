@@ -88,7 +88,7 @@ runs:
 
         # Wait for the last of the log information to be written
         $fileLocked = $true
-        $timeout = New-TimeSpan -Seconds 5
+        $timeout = New-TimeSpan -Seconds 10
         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
         do {
@@ -112,7 +112,6 @@ runs:
               $procsWithParent = Get-CimInstance -ClassName "win32_process" | Select-Object ProcessId,ParentProcessId
               $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
               $procs = Get-Process -IncludeUserName | Where-Object -Property Id -In $orphaned.ProcessId | Where-Object { $_.UserName -match $env:username }
-              $procs
               $procs | ForEach-Object { Stop-Process -Id $_.Id -ErrorAction SilentlyContinue }
             } else {
               Write-Host "End of log stream"
