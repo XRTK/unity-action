@@ -113,7 +113,7 @@ runs:
               $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
               $procs = Get-Process -IncludeUserName | Where-Object -Property Id -In $orphaned.ProcessId | Where-Object { $_.UserName -match $env:username }
               $procs
-              $procs | ForEach-Object { Stop-Process -Id $_.ProcessId -ErrorAction SilentlyContinue }
+              $procs | ForEach-Object { Stop-Process -Id $_.Id -ErrorAction SilentlyContinue }
             } else {
               Write-Host "End of log stream"
             }
