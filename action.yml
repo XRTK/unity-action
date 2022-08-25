@@ -88,6 +88,8 @@ runs:
 
         # Wait for the last of the log information to be written
         $fileLocked = $true
+        $timeout = New-TimeSpan -Seconds 5
+        $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
         do {
           try
