@@ -29,13 +29,13 @@ runs:
         # Unity Action
         $editorPath = "${{ inputs.editor-path }}"
         $projectPath = "${{ inputs.project-path }}"
-        $bulidTarget = "${{ inputs.build-target }}"
+        $buildTarget = "${{ inputs.build-target }}"
         $additionalArgs = "${{ inputs.args }}".Trim()
         $name = "${{ inputs.name }}"
         $buildTargetArgs = ""
 
-        if ( -not [string]::IsNullOrEmpty($bulidTarget) ) {
-          $buildTargetArgs = "-buildTarget `"$bulidTarget`" "
+        if ( -not [string]::IsNullOrEmpty($buildTarget) ) {
+          $buildTargetArgs = "-buildTarget `"$buildTarget`" "
         }
 
         $logDirectory = "$projectPath/Builds/Logs"
@@ -114,16 +114,13 @@ runs:
               $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
               $procs = Get-Process -IncludeUserName | Where-Object -Property Id -In $orphaned.ProcessId | Where-Object { $_.UserName -match $env:username }
               $procs | ForEach-Object { Stop-Process -Id $_.Id -ErrorAction SilentlyContinue }
-            } else {
             }
           }
 
-          Write-Host "End of log stream"
-
           Start-Sleep -Milliseconds 1
-          Receive-Job $ljob
         } while ( $fileLocked )
 
+        Write-Host "End of log stream"
         Write-Host "Cleaning up jobs..."
 
         # Clean up job
