@@ -22,7 +22,7 @@ jobs:
       max-parallel: 1
 
     steps:
-      - uses: xrtk/unity-action@v2
+      - uses: xrtk/unity-action@v3
         name: '${{ matrix.build-target }}-Tests'
         with:
           name: '${{ matrix.build-target }}-Tests'
@@ -31,7 +31,7 @@ jobs:
           build-target: '${{ matrix.build-target }}'
           args: '-batchmode -runEditorTests'
 
-      - uses: xrtk/unity-action@v2
+      - uses: xrtk/unity-action@v3
         name: '${{ matrix.build-target }}-Build'
         with:
           name: '${{ matrix.build-target }}-Build'
@@ -39,5 +39,4 @@ jobs:
           project-path: '${{ needs.validate.outputs.project-path }}'
           build-target: '${{ matrix.build-target }}'
           args: '-quit -batchmode -executeMethod XRTK.Editor.BuildPipeline.UnityPlayerBuildTools.StartCommandLineBuild'
-
 ```
