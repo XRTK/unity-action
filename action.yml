@@ -26,6 +26,7 @@ runs:
   steps:
     - name: '${{ inputs.name }}'
       run: |
+        # Unity Action
         $editorPath = "${{ inputs.editor-path }}"
         $projectPath = "${{ inputs.project-path }}"
         $bulidTarget = "${{ inputs.build-target }}"

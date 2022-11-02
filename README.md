@@ -12,7 +12,7 @@ Part of the [Mixed Reality Toolkit (XRTK)](https://github.com/XRTK) open source 
 jobs:
   activate:
     steps:
-      - uses: xrtk/unity-validate@main
+      - uses: xrtk/unity-validate@v2
   build:
     needs: activate
     runs-on: windows-latest
@@ -22,7 +22,7 @@ jobs:
       max-parallel: 1
 
     steps:
-      - uses: xrtk/unity-action@main
+      - uses: xrtk/unity-action@v2
         name: '${{ matrix.build-target }}-Tests'
         with:
           name: '${{ matrix.build-target }}-Tests'
@@ -31,7 +31,7 @@ jobs:
           build-target: '${{ matrix.build-target }}'
           args: '-batchmode -runEditorTests'
 
-      - uses: xrtk/unity-action@main
+      - uses: xrtk/unity-action@v2
         name: '${{ matrix.build-target }}-Build'
         with:
           name: '${{ matrix.build-target }}-Build'
