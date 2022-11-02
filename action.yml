@@ -12,7 +12,7 @@ inputs:
     required: true
   build-target:
     description: 'Platform build target'
-    required: true
+    required: false
   args:
     description: 'Unity cli arguments'
     required: false
