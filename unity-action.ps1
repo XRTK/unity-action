@@ -92,13 +92,13 @@ try {
 
         if ( $stopwatch.elapsed -lt $timeout )
         {
-        if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
-            Write-Host "Attempting to cleanup orphaned processes..."
-            $procsWithParent = Get-CimInstance -ClassName "win32_process" | Select-Object ProcessId,ParentProcessId
-            $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
-            $procs = Get-Process -IncludeUserName | Where-Object -Property Id -In $orphaned.ProcessId | Where-Object { $_.UserName -match $env:username }
-            $procs | ForEach-Object { Stop-Process -Id $_.Id -ErrorAction SilentlyContinue }
-        }
+            if ( (-not $global:PSVersionTable.Platform) -or ($global:PSVersionTable.Platform -eq "Win32NT") ) {
+                Write-Host "Attempting to cleanup orphaned processes..."
+                $procsWithParent = Get-CimInstance -ClassName "win32_process" | Select-Object ProcessId,ParentProcessId
+                $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
+                $procs = Get-Process -IncludeUserName | Where-Object -Property Id -In $orphaned.ProcessId | Where-Object { $_.UserName -match $env:username }
+                $procs | ForEach-Object { Stop-Process -Id $_.Id -ErrorAction SilentlyContinue }
+            }
         }
 
         Start-Sleep -Milliseconds 1
