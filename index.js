@@ -6,6 +6,10 @@ const path = require('path');
 const main = async () => {
     try {
         var args = "";
+
+        console.log(`start env: ${process.env}`);
+
+        console.log(`editor-path: ${process.env.EDITOR_PATH}`);
         var editorPath = process.env.EDITOR_PATH;
 
         if (!editorPath) {
@@ -14,6 +18,7 @@ const main = async () => {
 
         args += `-editorPath "${editorPath}" `;
 
+        console.log(`project-path: ${process.env.PROJECT_PATH}`);
         var projectPath = process.env.PROJECT_PATH;
 
         if (!projectPath) {
