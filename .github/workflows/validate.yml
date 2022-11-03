@@ -39,6 +39,3 @@ jobs:
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
       - uses: ./
-        with:
-          editor-path: ${{ env.editor-path }}
-          project-path: ${{ env.project-path }}
