@@ -1,0 +1,25 @@
+{
+  "name": "unity-action",
+  "version": "1.0.0",
+  "description": "An atomic GitHub Action that runs the Unity engine via cli with the provided parameters.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XRTK/unity-action.git"
+  },
+  "keywords": [],
+  "author": "Stephen Hodgson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/XRTK/unity-action/issues"
+  },
+  "homepage": "https://github.com/XRTK/unity-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/io": "^1.1.2"
+  }
+}
