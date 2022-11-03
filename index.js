@@ -34,13 +34,13 @@ const main = async () => {
             args += `-additionalArgs ${additionalArgs} `;
         }
 
-        var name = core.getInput('name');
+        var logName = core.getInput('log-name');
 
-        if (!name) {
-            throw Error("Missing name input");
+        if (!logName) {
+            throw Error("Missing log-name input");
         }
 
-        args += `-name ${name}`
+        args += `-logName ${logName}`
 
         var pwsh = await io.which("pwsh", true);
 
