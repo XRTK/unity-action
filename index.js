@@ -6,7 +6,7 @@ const path = require('path');
 const main = async () => {
     try {
         var args = "";
-        var editorPath = core.getState('editor-path');
+        var editorPath = process.env.EDITOR_PATH;
 
         if (!editorPath) {
             throw Error("Missing editor-path input");
@@ -14,7 +14,7 @@ const main = async () => {
 
         args += `-editorPath "${editorPath}" `;
 
-        var projectPath = core.getState('project-path');
+        var projectPath = process.env.PROJECT_PATH;
 
         if (!projectPath) {
             throw Error("Missing project-path input");
