@@ -25,5 +25,5 @@ runs:
   using: "composite"
   steps:
     - name: '${{ inputs.name }}'
-      run: ${{ github.action_path }}//unity-action.ps1 -editorPath ${{ inputs.editor-path }} -projectPath ${{ inputs.project-path }} -buildTarget ${{ inputs.build-target }} -additionalArgs ${{ inputs.args }} -name ${{ inputs.name }}
+      run: ${{ github.action_path }}//unity-action.ps1 -editorPath "${{ inputs.editor-path }}" -projectPath "${{ inputs.project-path }}" -buildTarget ${{ inputs.build-target }} -additionalArgs "${{ inputs.args }}" -name ${{ inputs.name }}
       shell: pwsh
