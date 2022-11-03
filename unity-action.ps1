@@ -26,8 +26,8 @@ try {
         Write-Host "Log Directory: $logDirectory"
 
         $date = Get-Date -Format "yyyyMMddTHHmmss"
-        $logName = "$logDirectory/$logName-$date"
-        $logPath = "$logName.log"
+        $fullLogName = "$logDirectory/$logName-$date"
+        $logPath = "$fullLogName.log"
         $buildArgs += "-logfile `"$logPath`" ";
     }
 
@@ -41,7 +41,6 @@ try {
     $buildArgs = $buildArgs.Trim()
 
     $buildArgs += " $additionalArgs"
-    Write-Host "::group::$editorPath $buildArgs"
 
     $process = Start-Process -FilePath "$editorPath" -ArgumentList "$buildArgs" -PassThru
 
@@ -112,8 +111,6 @@ try {
     Receive-Job $ljob
     Stop-Job $ljob
     Remove-Job $ljob
-
-    Write-Host "::endgroup::"
 
     exit $process.ExitCode
 }
