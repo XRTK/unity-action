@@ -31,7 +31,7 @@ const main = async () => {
         var additionalArgs = core.getInput('args');
 
         if (args) {
-            args += `-additionalArgs ${additionalArgs} `;
+            args += `"-additionalArgs ${additionalArgs}" `;
         }
 
         var logName = core.getInput('log-name');
