@@ -18,7 +18,7 @@ inputs:
     description: 'Unity cli arguments'
     required: false
     default: '-quit -batchmode'
-  name:
+  log-name:
     description: 'Name of the Unity Log'
     required: false
     default: 'Unity'
