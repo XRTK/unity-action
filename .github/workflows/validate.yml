@@ -40,5 +40,5 @@ jobs:
 
       - uses: ./
         with:
-          editor-path: ${{ env.editor-path }}
-          project-path: ${{ env.project-path }}
+          log-name: 'Test'
+          args: '-quit -batchmode'
