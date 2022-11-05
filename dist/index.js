@@ -82,18 +82,18 @@ const path = __nccwpck_require__(17);
 const main = async () => {
     try {
         var args = "";
-        var editorPath = core.getInput('editor-path');
+        var editorPath = process.env.UNITY_EDITOR_PATH;
 
         if (!editorPath) {
-            throw Error("Missing editor-path input");
+            throw Error("Missing UNITY_EDITOR_PATH ");
         }
 
         args += `-editorPath "${editorPath}" `;
 
-        var projectPath = core.getInput('project-path');
+        var projectPath = process.env.UNITY_PROJECT_PATH;
 
         if (!projectPath) {
-            throw Error("Missing project-path input");
+            throw Error("Missing UNITY_PROJECT_PATH");
         }
 
         args += `-projectPath "${projectPath}" `;

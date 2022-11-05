@@ -4,12 +4,6 @@ branding:
   icon: 'at-sign'
   color: 'blue'
 inputs:
-  editor-path:
-    description: 'Path to the Unity Editor'
-    required: true
-  project-path:
-    description: 'Path to the Unity project'
-    required: true
   build-target:
     description: 'Platform build target'
     required: false
