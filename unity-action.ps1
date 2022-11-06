@@ -64,7 +64,7 @@ try {
 
         if ( $null -eq (Get-Process -Id $processId -ErrorAction SilentlyContinue) )
         {
-            Write-Host "Unity process has ended unexpectedly..."
+            Write-Host "Unity process has ended unexpectedly!"
             break
         }
     }
@@ -79,11 +79,15 @@ try {
     do {
         try
         {
-            $file = Convert-Path $logPath
-            $fileStream = [System.IO.File]::Open($file,'Open','Write')
-            $fileStream.Close()
-            $fileStream.Dispose()
-            $fileLocked = $false
+            if (Test-Path -Path $logPath) {
+                $file = Convert-Path $logPath
+                $fileStream = [System.IO.File]::Open($file,'Open','Write')
+                $fileStream.Close()
+                $fileStream.Dispose()
+                $fileLocked = $false
+            } else {
+                $fileLocked = $false
+            }
         }
         catch
         {
@@ -105,6 +109,7 @@ try {
     } while ( $fileLocked )
 
     Write-Host "End of log stream"
+    Start-Sleep -Milliseconds 1
     Write-Host "Cleaning up jobs..."
 
     # Clean up job
