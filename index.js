@@ -40,12 +40,14 @@ const main = async () => {
             throw Error("Missing log-name input");
         }
 
-        args += `-logName ${logName}`
+        args += `-logName ${logName}`;
 
         var pwsh = await io.which("pwsh", true);
 
         var unity_action = path.resolve(__dirname, 'unity-action.ps1');
+        console.log(`::group:: Unity Action: ${args}`);
         var exitCode = await exec.exec(`"${pwsh}" -Command`, `${unity_action} ${args}`);
+        console.log(`::endgroup::`);
 
         if (exitCode != 0) {
             throw Error(`Unity Action Failed! exitCode: ${exitCode}`)
