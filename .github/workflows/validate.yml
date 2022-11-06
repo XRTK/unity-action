@@ -43,7 +43,7 @@ jobs:
         with:
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
-      - uses: xrtk/activate-unity-license@main
+      - uses: xrtk/activate-unity-license@development
         with:
           username: ${{ secrets.UNITY_USERNAME }}
           password: ${{ secrets.UNITY_PASSWORD }}
