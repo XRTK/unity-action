@@ -4155,7 +4155,7 @@ const main = async () => {
         var pwsh = await io.which("pwsh", true);
 
         var unity_action = __nccwpck_require__.ab + "unity-action.ps1";
-        console.log(`::group:: Unity Action: ${args}`);
+        console.log(`::group::Run ${args}`);
         var exitCode = await exec.exec(`"${pwsh}" -Command`, `${unity_action} ${args}`);
         console.log(`::endgroup::`);
 
