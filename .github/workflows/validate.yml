@@ -39,7 +39,7 @@ jobs:
 
       - run: npm install
 
-      - uses: xrtk/unity-setup@main
+      - uses: xrtk/unity-setup@v3
         with:
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
@@ -49,7 +49,8 @@ jobs:
           password: ${{ secrets.UNITY_PASSWORD }}
           license-type: 'Personal'
 
-      - uses: ./
+      - name: xrtk/unity-action
+        uses: ./
         with:
           log-name: 'Test'
           args: '-quit -batchmode'
