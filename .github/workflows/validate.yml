@@ -18,6 +18,7 @@ jobs:
   validate:
     runs-on: ${{ matrix.os }}
     strategy:
+      max-parallel: 2 # Use this if you're activating pro license with matrix
       matrix:
         include:
           - os: ubuntu-latest
@@ -37,9 +38,7 @@ jobs:
           repository: xrtk/com.xrtk.test
           path: test-project
 
-      - run: npm install
-
-      - uses: xrtk/unity-setup@v3
+      - uses: xrtk/unity-setup@v4
         with:
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
@@ -47,7 +46,8 @@ jobs:
         with:
           username: ${{ secrets.UNITY_USERNAME }}
           password: ${{ secrets.UNITY_PASSWORD }}
-          license-type: 'Personal'
+          serial: ${{ secrets.UNITY_SERIAL }} # Required for pro/plus activations
+          license-type: 'Professional' # Chooses license type to use [ Personal, Professional ]
 
       - name: xrtk/unity-action
         uses: ./
