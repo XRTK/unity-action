@@ -53,7 +53,7 @@ jobs:
         uses: ./
         with:
           log-name: 'Test'
-          args: '-quit -batchmode'
+          args: '-quit -batchmode -nographics'
 
       - uses: actions/upload-artifact@v3
         name: Upload Artifacts
