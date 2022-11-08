@@ -1,10 +1,16 @@
 # Unity Action (XRTK)
 
-An atomic GitHub Action that runs the Unity engine via cli with the provided parameters.
+An atomic GitHub Action that runs cli tool for passing commands to the Unity Engine.
 
 Part of the [Mixed Reality Toolkit (XRTK)](https://github.com/XRTK) open source project.
 
-> This action does not have any dependency on the use of XRTK in your Unity project, unless you'd like to use the command line build `-executeMethod` arg
+> This action does not require the use of XRTK in your Unity project.
+
+## Related Github Actions
+
+* [xrtk/unity-setup](https://github.com/XRTK/unity-setup) Downloads and installs the unity editor.
+* [xrtk/unity-action](https://github.com/XRTK/activate-unity-license) An cli tool for passing commands to the Unity Engine.
+* [xrtk/unity-build](https://github.com/XRTK/unity-build) ***(Requires XRTK plugin in Unity Project)***
 
 ## How to use
 
