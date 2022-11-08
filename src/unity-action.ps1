@@ -15,7 +15,15 @@ try {
     }
 
     if (-not [String]::IsNullOrEmpty($projectPath)) {
-        $buildArgs += "-projectPath `"$projectPath`" "
+        if (($additionalArgs -match "-createManualActivationFile") -or
+            ($additionalArgs -match "-manualLicenseFile") -or
+            ($additionalArgs -match "-returnlicense") -or
+            ($additionalArgs -match "-serial")) {
+            Write-Host "License activation, no project path will be set"
+        } else {
+            $buildArgs += "-projectPath `"$projectPath`" "
+            Write-Host "Project Path added to args $projectPath"
+        }
 
         $logDirectory = "$projectPath/Builds/Logs"
 
