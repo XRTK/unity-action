@@ -38,6 +38,8 @@ jobs:
         # sets -> env.UNITY_PROJECT_PATH
         # https://github.com/XRTK/unity-setup
       - uses: xrtk/unity-setup@v6
+        with:
+          modules: '${{ matrix.build-targets }}'
 
         # Activates the installation with the provided credentials
       - uses: xrtk/activate-unity-license@v2

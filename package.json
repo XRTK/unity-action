@@ -1,6 +1,6 @@
 {
   "name": "unity-action",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "An atomic GitHub Action that runs the Unity engine via cli with the provided parameters.",
   "main": "src/index.js",
   "scripts": {
