@@ -37,10 +37,12 @@ jobs:
         # sets -> env.UNITY_EDITOR_PATH
         # sets -> env.UNITY_PROJECT_PATH
         # https://github.com/XRTK/unity-setup
-      - uses: xrtk/unity-setup@v4
+      - uses: xrtk/unity-setup@v6
+        with:
+          build-targets: ${{ matrix.build-target }}
 
         # Activates the installation with the provided credentials
-      - uses: xrtk/activate-unity-license@v1
+      - uses: xrtk/activate-unity-license@v2
         with:
           # Required
           username: ${{ secrets.UNITY_USERNAME }}
@@ -49,7 +51,7 @@ jobs:
           license-type: 'Personal' # Chooses license type to use [ Personal, Professional ]
           serial: ${{ secrets.UNITY_SERIAL }} # Required for pro/plus activations
 
-      - uses: xrtk/unity-action@v4
+      - uses: xrtk/unity-action@v5
         name: '${{ matrix.build-target }}-Tests'
         with:
           name: '${{ matrix.build-target }}-Tests'
@@ -58,7 +60,7 @@ jobs:
           build-target: '${{ matrix.build-target }}'
           args: '-batchmode -runEditorTests'
 
-      - uses: xrtk/unity-action@v4
+      - uses: xrtk/unity-action@v5
         name: '${{ matrix.build-target }}-Build'
         with:
           name: '${{ matrix.build-target }}-Build'

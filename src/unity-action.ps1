@@ -55,11 +55,11 @@ try {
     $ljob = Start-Job -ScriptBlock {
         param($log)
 
-        while ( -not (Test-Path $log -Type Leaf) ) {
+        while ( -not (Test-Path -Path $log -Type Leaf) ) {
             Start-Sleep -Milliseconds 1
         }
 
-        Get-Content "$log" -Wait
+        Get-Content -Path $log -Wait | Write-Host
     } -ArgumentList $logPath
 
     $processId = $process.Id
