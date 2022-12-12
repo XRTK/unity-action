@@ -38,11 +38,11 @@ jobs:
           repository: xrtk/com.xrtk.test
           path: test-project
 
-      - uses: xrtk/unity-setup@v4
+      - uses: xrtk/unity-setup@v6
         with:
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
-      - uses: xrtk/activate-unity-license@v1
+      - uses: xrtk/activate-unity-license@v2
         with:
           username: ${{ secrets.UNITY_USERNAME }}
           password: ${{ secrets.UNITY_PASSWORD }}
