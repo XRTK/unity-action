@@ -59,7 +59,7 @@ try {
             Start-Sleep -Milliseconds 1
         }
 
-        Get-Content -Path $log -Wait
+        Get-Content -Path $log -Wait | Write-Host
     } -ArgumentList $logPath
 
     $processId = $process.Id
