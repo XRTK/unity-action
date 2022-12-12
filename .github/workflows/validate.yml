@@ -40,7 +40,7 @@ jobs:
 
       - uses: xrtk/unity-setup@v6
         with:
-          modules: '${{ matrix.build-targets }}'
+          build-targets: ${{ matrix.build-target }}
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
       - uses: xrtk/activate-unity-license@v2
