@@ -43,7 +43,6 @@ const main = async () => {
         args += `-logName ${logName}`;
 
         var pwsh = await io.which("pwsh", true);
-
         var unity_action = path.resolve(__dirname, 'unity-action.ps1');
         console.log(`::group::Run ${args}`);
         var exitCode = await exec.exec(`"${pwsh}" -Command`, `${unity_action} ${args}`);
