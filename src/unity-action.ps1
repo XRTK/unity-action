@@ -74,6 +74,14 @@ try {
         {
             break
         }
+
+        # Check if the job was cancelled and kill the Unity process if it was
+        if ($PSCommandPath -ne $null -and (Test-Path $PSCommandPath) -and (Get-Content $PSCommandPath | Select-String -Quiet -Pattern 'CancelRequested'))
+        {
+            Write-Host "Unity process was cancelled"
+            Stop-Process -Id $processId -Force
+            break
+        }
     }
 
     # Wait for the last of the log information to be written
