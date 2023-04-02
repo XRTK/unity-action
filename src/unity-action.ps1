@@ -79,7 +79,7 @@ try {
         if ($PSCommandPath -ne $null -and (Test-Path $PSCommandPath) -and (Get-Content $PSCommandPath | Select-String -Quiet -Pattern 'CancelRequested'))
         {
             Write-Host "Unity process was cancelled"
-            Stop-Process -Id $processId -Force
+            Get-Process -Id $processId -ErrorAction SilentlyContinue | Foreach-Object { $_.Kill() }
             break
         }
     }
