@@ -74,6 +74,18 @@ try {
         {
             break
         }
+
+        # Check if the job was cancelled and kill the Unity process if it was
+        $eventPath = $env:GITHUB_EVENT_PATH
+
+        if (-not [string]::IsNullOrEmpty($eventPath)) {
+            $eventContent = Get-Content -Path $eventPath -Raw | ConvertFrom-Json
+            if ($eventContent.cancelled -eq $true) {
+                Write-Host "Unity process was cancelled"
+                Get-Process -Id $processId -ErrorAction SilentlyContinue | Foreach-Object { $_.Kill() }
+                break
+            }
+        }
     }
 
     # Wait for the last of the log information to be written
