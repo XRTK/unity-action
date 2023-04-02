@@ -97,6 +97,7 @@ try {
         catch
         {
             $fileLocked = $true
+            Start-Sleep -Milliseconds 1
         }
 
         if ( $stopwatch.elapsed -lt $timeout )
@@ -105,7 +106,15 @@ try {
                 $procsWithParent = Get-CimInstance -ClassName "win32_process" | Select-Object ProcessId,ParentProcessId
                 $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
                 $procs = Get-Process -IncludeUserName | Where-Object -Property Id -In $orphaned.ProcessId | Where-Object { $_.UserName -match $env:username }
-                $procs | ForEach-Object { Stop-Process -Id $_.Id -ErrorAction SilentlyContinue }
+                $procs | ForEach-Object {
+                    Write-Host "Terminating Unity process with PID: $($_.Id)"
+                    $_.CloseMainWindow()
+
+                    if (!$_.WaitForExit(1000))
+                    {
+                        $_.Kill()
+                    }
+                }
             }
         }
 
