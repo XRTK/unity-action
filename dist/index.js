@@ -4153,7 +4153,6 @@ const main = async () => {
         args += `-logName ${logName}`;
 
         var pwsh = await io.which("pwsh", true);
-
         var unity_action = __nccwpck_require__.ab + "unity-action.ps1";
         console.log(`::group::Run ${args}`);
         var exitCode = await exec.exec(`"${pwsh}" -Command`, `${unity_action} ${args}`);
@@ -4163,7 +4162,7 @@ const main = async () => {
             throw Error(`Unity Action Failed! exitCode: ${exitCode}`)
         }
     } catch (error) {
-        core.setFailed(error.message);
+        core.setFailed(`Unity Action Failed! ${error.message}`);
     }
 }
 

@@ -74,6 +74,14 @@ try {
         {
             break
         }
+
+        # Check if the job was cancelled and kill the Unity process if it was
+        if ($PSCommandPath -ne $null -and (Test-Path $PSCommandPath) -and (Get-Content $PSCommandPath | Select-String -Quiet -Pattern 'CancelRequested'))
+        {
+            Write-Host "Unity process was cancelled"
+            Get-Process -Id $processId -ErrorAction SilentlyContinue | Foreach-Object { $_.Kill() }
+            break
+        }
     }
 
     # Wait for the last of the log information to be written
@@ -97,6 +105,7 @@ try {
         catch
         {
             $fileLocked = $true
+            Start-Sleep -Milliseconds 1
         }
 
         if ( $stopwatch.elapsed -lt $timeout )
@@ -105,7 +114,15 @@ try {
                 $procsWithParent = Get-CimInstance -ClassName "win32_process" | Select-Object ProcessId,ParentProcessId
                 $orphaned = $procsWithParent | Where-Object -Property ParentProcessId -NotIn $procsWithParent.ProcessId
                 $procs = Get-Process -IncludeUserName | Where-Object -Property Id -In $orphaned.ProcessId | Where-Object { $_.UserName -match $env:username }
-                $procs | ForEach-Object { Stop-Process -Id $_.Id -ErrorAction SilentlyContinue }
+                $procs | ForEach-Object {
+                    Write-Host "Terminating Unity process with PID: $($_.Id)"
+                    $_.CloseMainWindow()
+
+                    if (!$_.WaitForExit(1000))
+                    {
+                        $_.Kill()
+                    }
+                }
             }
         }
 
