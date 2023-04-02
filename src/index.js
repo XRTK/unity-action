@@ -53,7 +53,7 @@ const main = async () => {
             throw Error(`Unity Action Failed! exitCode: ${exitCode}`)
         }
     } catch (error) {
-        core.setFailed(error.message);
+        core.setFailed(`Unity Action Failed! ${error.message}`);
     }
 }
 
