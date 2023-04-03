@@ -152,5 +152,7 @@ try {
     exit $process.ExitCode
 }
 catch {
+    $errorMessage = $_.Exception.Message
+    Write-Host "::error::An error occurred in unity-action.ps1: $errorMessage"
     exit 1
 }
