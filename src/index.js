@@ -87,9 +87,12 @@ async function Cleanup() {
 async function deletePath(path) {
     try {
         if (fs.existsSync(path)) {
-        await io.rmRF(path);
+            core.debug(`Deleted ${path}`)
+            await io.rmRF(path);
+        } else {
+            core.debug(`${path} does not exist`)
         }
     } catch (error) {
-        core.error(`Failed to remove ${path}`);
+        core.error(`Failed to remove ${path}! ${error}`);
     }
 }
