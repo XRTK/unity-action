@@ -4112,6 +4112,7 @@ const core = __nccwpck_require__(186);
 const exec = __nccwpck_require__(514);
 const io = __nccwpck_require__(436);
 const path = __nccwpck_require__(17);
+const fs = __nccwpck_require__(147);
 
 const IsPost = !!core.getState('isPost');
 
