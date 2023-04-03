@@ -68,18 +68,14 @@ jobs:
       - uses: xrtk/unity-action@v6
         name: '${{ matrix.build-target }}-Tests'
         with:
-          name: '${{ matrix.build-target }}-Tests'
-          editor-path: '${{ needs.validate.outputs.editor-path }}'
-          project-path: '${{ needs.validate.outputs.project-path }}'
           build-target: '${{ matrix.build-target }}'
           args: '-batchmode -runEditorTests'
+          log-name: '${{ matrix.build-target }}-Tests'
 
       - uses: xrtk/unity-action@v6
         name: '${{ matrix.build-target }}-Build'
         with:
-          name: '${{ matrix.build-target }}-Build'
-          editor-path: '${{ needs.validate.outputs.editor-path }}'
-          project-path: '${{ needs.validate.outputs.project-path }}'
           build-target: '${{ matrix.build-target }}'
           args: '-quit -batchmode -executeMethod XRTK.Editor.BuildPipeline.UnityPlayerBuildTools.StartCommandLineBuild'
+          log-name: '${{ matrix.build-target }}-Build'
 ```
