@@ -61,6 +61,8 @@ try {
     } -ArgumentList $logPath
 
     $processId = $process.Id
+    Write-Output "::debug::Unity Process ID: $processId"
+    $processId | Out-File -FilePath "$env:GITHUB_WORKSPACE/unity-process-id.txt"
 
     while ( -not $process.HasExited )
     {
