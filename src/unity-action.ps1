@@ -82,10 +82,17 @@ try {
             $githubEvent = Get-Content -Path $githubEventPath -Raw | ConvertFrom-Json
 
             if ($githubEvent.action -eq 'cancelled') {
-                Write-Host "Unity process was cancelled"
+                Write-Host "GitHub Action was cancelled"
+                Write-Host "Killing Unity process with PID: $processId"
                 Get-Process -Id $processId -ErrorAction SilentlyContinue | Foreach-Object { $_.Kill() }
                 break
             }
+            else {
+                Write-Host "GitHub Action was not cancelled"
+            }
+        }
+        else {
+            Write-Host "GitHub event path not found"
         }
     }
 
