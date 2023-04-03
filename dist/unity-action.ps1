@@ -7,9 +7,10 @@ param(
     [String]$logName = "Unity"
 )
 
-try {
-    $buildArgs = ""
+$buildArgs = ""
+$process = $null
 
+try {
     if ( -not [string]::IsNullOrEmpty($buildTarget) ) {
         $buildArgs += "-buildTarget `"$buildTarget`" "
     }
@@ -47,11 +48,8 @@ try {
     }
 
     $buildArgs = $buildArgs.Trim()
-
     $buildArgs += " $additionalArgs"
-
     $process = Start-Process -FilePath "$editorPath" -ArgumentList "$buildArgs" -PassThru
-
     $ljob = Start-Job -ScriptBlock {
         param($log)
 
@@ -73,27 +71,6 @@ try {
         if ( $null -eq (Get-Process -Id $processId -ErrorAction SilentlyContinue) )
         {
             break
-        }
-
-        # Check if the job was cancelled and kill the Unity process if it was
-        $githubEventPath = $env:GITHUB_EVENT_PATH
-
-        if (-not [string]::IsNullOrEmpty($githubEventPath)) {
-            $githubEvent = Get-Content -Path $githubEventPath -Raw | ConvertFrom-Json
-
-            if ($githubEvent.action -eq 'cancelled') {
-                Write-Host "::warning::GitHub Action was cancelled"
-                Write-Host "::warning::Killing Unity process with PID: $processId"
-                Get-Process -Id $processId -ErrorAction SilentlyContinue | Foreach-Object { $_.Kill() }
-                break
-            }
-            else {
-                $githubAction = $githubEvent.action
-                Write-Host "::debug::GitHub Action '$githubAction'"
-            }
-        }
-        else {
-            Write-Host "::error::GitHub event path not found"
         }
     }
 
@@ -143,16 +120,19 @@ try {
     } while ( $fileLocked )
 
     Start-Sleep -Milliseconds 1
-
     # Clean up job
     Receive-Job $ljob
     Stop-Job $ljob
     Remove-Job $ljob
-
     exit $process.ExitCode
 }
 catch {
     $errorMessage = $_.Exception.Message
-    Write-Host "::error::An error occurred in unity-action.ps1: $errorMessage"
+    Write-Host "::error::An error occurred in xrtk/unity-action/src/unity-action.ps1: $errorMessage"
+
+    if ($process -and (-not $process.HasExited)) {
+        $process.Kill()
+    }
+
     exit 1
 }
