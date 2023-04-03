@@ -2,8 +2,24 @@ const core = require('@actions/core');
 const exec = require('@actions/exec');
 const io = require('@actions/io');
 const path = require('path');
+const fs = require('fs');
+
+const IsPost = !!core.getState('isPost');
 
 const main = async () => {
+    core.saveState('isPost', true);
+
+    if (!IsPost) {
+        await UnityAction();
+    } else {
+        await Cleanup();
+    }
+}
+
+// Call the main function to run the action
+main();
+
+async function UnityAction() {
     try {
         var args = "";
         var editorPath = process.env.UNITY_EDITOR_PATH;
@@ -43,19 +59,41 @@ const main = async () => {
         args += `-logName ${logName}`;
 
         var pwsh = await io.which("pwsh", true);
-
         var unity_action = path.resolve(__dirname, 'unity-action.ps1');
-        console.log(`::group::Run ${args}`);
+        core.startGroup(`Run ${args}`);
         var exitCode = await exec.exec(`"${pwsh}" -Command`, `${unity_action} ${args}`);
-        console.log(`::endgroup::`);
+        core.endGroup();
 
         if (exitCode != 0) {
-            throw Error(`Unity Action Failed! exitCode: ${exitCode}`)
+            throw Error(`unity-action failed! exitCode: ${exitCode}`)
         }
     } catch (error) {
-        core.setFailed(error.message);
+        core.setFailed(`unity-action failed! ${error.message}`);
     }
 }
 
-// Call the main function to run the action
-main();
+async function Cleanup() {
+    const workspace = process.env.GITHUB_WORKSPACE;
+    const unityProcessIdFile = path.join(workspace, 'unity-process-id.txt');
+    const buildsDirectory = path.join(workspace, 'Builds');
+    const logDirectory = path.join(workspace, 'Logs');
+
+    await Promise.all([
+        deletePath(unityProcessIdFile),
+        deletePath(buildsDirectory),
+        deletePath(logDirectory)
+    ]);
+}
+
+async function deletePath(path) {
+    try {
+        if (fs.existsSync(path)) {
+            core.debug(`Deleted ${path}`)
+            await io.rmRF(path);
+        } else {
+            core.debug(`${path} does not exist`)
+        }
+    } catch (error) {
+        core.error(`Failed to remove ${path}! ${error}`);
+    }
+}

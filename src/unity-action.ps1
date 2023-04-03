@@ -7,9 +7,10 @@ param(
     [String]$logName = "Unity"
 )
 
-try {
-    $buildArgs = ""
+$buildArgs = ""
+$process = $null
 
+try {
     if ( -not [string]::IsNullOrEmpty($buildTarget) ) {
         $buildArgs += "-buildTarget `"$buildTarget`" "
     }
@@ -47,11 +48,8 @@ try {
     }
 
     $buildArgs = $buildArgs.Trim()
-
     $buildArgs += " $additionalArgs"
-
     $process = Start-Process -FilePath "$editorPath" -ArgumentList "$buildArgs" -PassThru
-
     $ljob = Start-Job -ScriptBlock {
         param($log)
 
@@ -63,6 +61,8 @@ try {
     } -ArgumentList $logPath
 
     $processId = $process.Id
+    Write-Output "::debug::Unity Process ID: $processId"
+    $processId | Out-File -FilePath "$env:GITHUB_WORKSPACE/unity-process-id.txt"
 
     while ( -not $process.HasExited )
     {
@@ -97,6 +97,7 @@ try {
         catch
         {
             $fileLocked = $true
+            Start-Sleep -Milliseconds 1
         }
 
         if ( $stopwatch.elapsed -lt $timeout )
@@ -113,14 +114,19 @@ try {
     } while ( $fileLocked )
 
     Start-Sleep -Milliseconds 1
-
     # Clean up job
     Receive-Job $ljob
     Stop-Job $ljob
     Remove-Job $ljob
-
     exit $process.ExitCode
 }
 catch {
+    $errorMessage = $_.Exception.Message
+    Write-Host "::error::An error occurred in xrtk/unity-action/src/unity-action.ps1: $errorMessage"
+
+    if ($process -and (-not $process.HasExited)) {
+        $process.Kill()
+    }
+
     exit 1
 }
