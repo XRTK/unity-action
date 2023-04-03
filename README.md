@@ -14,6 +14,20 @@ Part of the [Mixed Reality Toolkit (XRTK)](https://github.com/XRTK) open source 
 
 ## How to use
 
+### Inputs
+
+| Input | Description | Required | Default |
+|-------|-------------|----------|---------|
+| `build-target` | Platform build target. | `false` | `''` |
+| `args` | Unity command line arguments. | `false` | `'-quit -batchmode -nographics'` |
+| `log-name` | Name of the Unity Log. | `false` | `'Unity'` |
+
+### Outputs
+
+A `unity-process-id.txt` file containing the ID of the Unity process running during the Unity Action execution is created in the workspace directory. This output is useful if you need to kill the Unity process after the action execution. You can retrieve the process ID by reading the contents of the `unity-process-id.txt` file.
+
+## Example
+
 ```yaml
 jobs:
   build:
@@ -37,7 +51,7 @@ jobs:
         # sets -> env.UNITY_EDITOR_PATH
         # sets -> env.UNITY_PROJECT_PATH
         # https://github.com/XRTK/unity-setup
-      - uses: xrtk/unity-setup@v6
+      - uses: xrtk/unity-setup@v7.1
         with:
           build-targets: ${{ matrix.build-target }}
 
@@ -51,7 +65,7 @@ jobs:
           license-type: 'Personal' # Chooses license type to use [ Personal, Professional ]
           serial: ${{ secrets.UNITY_SERIAL }} # Required for pro/plus activations
 
-      - uses: xrtk/unity-action@v5
+      - uses: xrtk/unity-action@v6
         name: '${{ matrix.build-target }}-Tests'
         with:
           name: '${{ matrix.build-target }}-Tests'
@@ -60,7 +74,7 @@ jobs:
           build-target: '${{ matrix.build-target }}'
           args: '-batchmode -runEditorTests'
 
-      - uses: xrtk/unity-action@v5
+      - uses: xrtk/unity-action@v6
         name: '${{ matrix.build-target }}-Build'
         with:
           name: '${{ matrix.build-target }}-Build'
