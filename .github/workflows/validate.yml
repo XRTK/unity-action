@@ -65,14 +65,3 @@ jobs:
         with:
           name: '${{ runner.os }}-${{ matrix.build-target }}-Artifacts'
           path: '${{ env.UNITY_PROJECT_PATH }}/Builds'
-
-      - name: Clean Artifacts
-        if: always()
-        run: |
-          # Clean Artifacts
-          $artifacts = "${{ env.UNITY_PROJECT_PATH }}/Builds"
-
-          if (Test-Path -Path $artifacts) {
-            Remove-Item $artifacts -Force -Recurse
-          }
-        shell: pwsh
