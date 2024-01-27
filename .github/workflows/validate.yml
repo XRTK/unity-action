@@ -43,7 +43,7 @@ jobs:
           repository: xrtk/com.xrtk.test
           path: test-project
 
-      - uses: xrtk/unity-setup@v7
+      - uses: xrtk/unity-setup@v7.4
         with:
           build-targets: ${{ matrix.build-target }}
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
@@ -58,6 +58,7 @@ jobs:
           license-type: 'Personal' # Chooses license type to use [ Personal, Professional ]
           # serial: ${{ secrets.UNITY_SERIAL }} # Required for pro/plus activations
           auth-key: ${{ secrets.UNITY_2FA_KEY }} # required for personal activations
+
       - name: xrtk/unity-action
         uses: ./
         with:
