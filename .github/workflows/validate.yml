@@ -49,7 +49,7 @@ jobs:
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
         # Activates the installation with the provided credentials
-      - uses: xrtk/activate-unity-license@v5
+      - uses: xrtk/activate-unity-license@v5.1
         with:
           # Required
           username: ${{ secrets.UNITY_USERNAME }}

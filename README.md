@@ -56,7 +56,7 @@ jobs:
           build-targets: ${{ matrix.build-target }}
 
         # Activates the installation with the provided credentials
-      - uses: xrtk/activate-unity-license@v5
+      - uses: xrtk/activate-unity-license@v5.1
         with:
           # Required
           username: ${{ secrets.UNITY_USERNAME }}
@@ -65,14 +65,14 @@ jobs:
           license-type: 'Personal' # Chooses license type to use [ Personal, Professional ]
           serial: ${{ secrets.UNITY_SERIAL }} # Required for pro/plus activations
 
-      - uses: xrtk/unity-action@v6
+      - uses: xrtk/unity-action@v6.1
         name: '${{ matrix.build-target }}-Tests'
         with:
           build-target: '${{ matrix.build-target }}'
           args: '-batchmode -runEditorTests'
           log-name: '${{ matrix.build-target }}-Tests'
 
-      - uses: xrtk/unity-action@v6
+      - uses: xrtk/unity-action@v6.1
         name: '${{ matrix.build-target }}-Build'
         with:
           build-target: '${{ matrix.build-target }}'
