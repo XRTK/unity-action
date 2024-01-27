@@ -15,7 +15,7 @@ env:
   UNITY_PROJECT_PATH: ''
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   validate:
@@ -33,36 +33,42 @@ jobs:
 
     steps:
       - name: checkout self
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - run: npm install
 
       - name: checkout test project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: xrtk/com.xrtk.test
           path: test-project
 
-      - uses: xrtk/unity-setup@v7.1
+      - uses: xrtk/unity-setup@v7
         with:
           build-targets: ${{ matrix.build-target }}
           version-file-path: 'test-project/**/ProjectSettings/ProjectVersion.txt'
 
-      - uses: xrtk/activate-unity-license@v2
+        # Activates the installation with the provided credentials
+      - uses: xrtk/activate-unity-license@v5
         with:
+          # Required
           username: ${{ secrets.UNITY_USERNAME }}
           password: ${{ secrets.UNITY_PASSWORD }}
-          serial: ${{ secrets.UNITY_SERIAL }} # Required for pro/plus activations
-          license-type: 'Professional' # Chooses license type to use [ Personal, Professional ]
-
+          # Optional
+          license-type: 'Personal' # Chooses license type to use [ Personal, Professional ]
+          # serial: ${{ secrets.UNITY_SERIAL }} # Required for pro/plus activations
+          auth-key: ${{ secrets.UNITY_2FA_KEY }} # required for personal activations
       - name: xrtk/unity-action
         uses: ./
         with:
           log-name: 'Test'
           args: '-quit -batchmode -nographics'
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         name: Upload Artifacts
         if: always()
         with:
-          name: '${{ runner.os }}-${{ matrix.build-target }}-Artifacts'
-          path: '${{ env.UNITY_PROJECT_PATH }}/Builds'
-          if-no-files-found: ignore
+          name: '${{ github.run_number }}.${{ github.run_attempt }}-${{ runner.os }}-${{ matrix.build-target }}-Artifacts'
+          path: |
+            ${{ env.UNITY_PROJECT_PATH }}/**/*.log
+            ${{ env.UNITY_PROJECT_PATH }}/Builds/${{ matrix.build-target }}/
