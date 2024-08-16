@@ -1,5 +1,8 @@
 # Unity Action (XRTK)
 
+> [!IMPORTANT]
+> The action is no longer be maintained and has been moved to [buildalon/unity-action](https://github.com/buildalon/unity-action)
+
 An atomic GitHub Action that runs cli tool for passing commands to the Unity Engine.
 
 Part of the [Mixed Reality Toolkit (XRTK)](https://github.com/XRTK) open source project.
